@@ -20,7 +20,12 @@ __DOWNLOAD_URL_OPENAPI_GENERATOR_JAR=https://repo1.maven.org/maven2/org/openapit
 OPENAPI_GENERATOR_LANG=dart-dio-next
 
 
-all: init gen
+.PHONY: help
+help: ## Show help
+	@echo "Usage: Automatically generate \"Bitwarden API Client\"."
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+all: init gen ## SDK is automatically generated
 
 .PHONY: valid
 valid:
@@ -30,7 +35,7 @@ valid:
 	fi
 
 .PHONY: init
-init: valid
+init: valid ## Initial setup
 	@mkdir -p $(__TMP_DIR)/{data,bin}
 
 	@rm -f $(__BITWARDEN_OPENAPI_FILE) && \
@@ -42,10 +47,8 @@ init: valid
 
 
 gen: valid
-	rm -rf $(__OUTPUT_DIR)
-	# echo "`cat $(__BITWARDEN_OPENAPI_FILE) | jq -r '.info.version'`-$(NOW)";
-
-	# VERSION=`cat $(__BITWARDEN_OPENAPI_FILE) | jq '.info.version'`-$(NOW); \
+	@rm -rf $(__OUTPUT_DIR)
+	@sed -i.orig "s/OAuth2\ Client\ Credentials/oAuth2ClientCredentials/g" $(__BITWARDEN_OPENAPI_FILE)
 
 	java -jar $(__OPENAPI_GENERATOR_JAR) generate \
 		-i $(__BITWARDEN_OPENAPI_FILE) \
@@ -59,5 +62,5 @@ gen: valid
 		--additional-properties pubHomepage="https://github.com/cam-inc/bitwarden"
 
 
-clean:
+clean: ## Clean the workplace
 	rm -rf $(__TMP_DIR)
