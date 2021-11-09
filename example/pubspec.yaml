@@ -1,0 +1,15 @@
+name: bitwarden_example
+version: 0.0.20211108102656-latest
+description: A Dart library for Bitwarden API.
+homepage: https://github.com/cam-inc/bitwarden
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  bitwarden:
+    path: ../dist
+
+dev_dependencies:
+  built_value_generator: '>=8.1.0 <9.0.0'
+  build_runner: any
